@@ -198,4 +198,12 @@ public class Player : MonoBehaviour
     {
         isDamaged = false;
     }
+
+    void OnCollisionStay2D(Collision2D collision)
+    {
+        if(collision.gameObject.tag == "Trap Platform" && rigid.velocity.y == 0)
+        {
+            transform.position = FindObjectOfType<GameManager>().ReturnPoint.position;
+        }
+    }
 }
