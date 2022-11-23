@@ -11,6 +11,7 @@ public class Player : MonoBehaviour
     AudioSource audioSource;
     public AudioClip[] audioClips;
 
+    
     public float maxSpeed;
     public float jumpPower;
     public bool isJumping;
@@ -143,6 +144,38 @@ public class Player : MonoBehaviour
             rigid.AddForce(Vector2.up * 25, ForceMode2D.Impulse);
             isJumping = true;
             anim.SetBool("isJump", true);
+        }
+        else if(collision.transform.CompareTag("Item"))
+        {
+            collision.gameObject.SetActive(false);
+            health++;
+        }
+        else if(collision.transform.CompareTag("Save Point"))
+        {
+            GameManager.Instance.SetSavePoint();
+        }
+        else if(collision.transform.CompareTag("Falling Border"))
+        {
+            if(!GameManager.Instance.IsSavePoint)
+            {
+                GameManager.Instance.GameOver();
+            }
+            else
+            {
+                if(health >1)
+                {
+                    health--;
+                    GameManager.Instance.SetPlayerPosition();
+                }
+                else if(health <=1)
+                {
+                    GameManager.Instance.GameOver();
+                }
+            }
+        }
+        else if (collision.transform.CompareTag("Clear Point"))
+        {
+            GameManager.Instance.GameClear();
         }
     }
 

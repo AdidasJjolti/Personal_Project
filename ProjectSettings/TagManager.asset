@@ -12,6 +12,8 @@ TagManager:
   - Item
   - Bullet Border
   - Trap Platform
+  - Clear Point
+  - Falling Border
   layers:
   - Default
   - TransparentFX
