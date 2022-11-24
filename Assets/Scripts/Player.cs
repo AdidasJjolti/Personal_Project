@@ -26,6 +26,11 @@ public class Player : MonoBehaviour
 
     [SerializeField]private int health = 3;
 
+    public int Health
+    {
+        get { return health; }
+    }
+
     void Awake()
     {
         rigid = GetComponent<Rigidbody2D>();
