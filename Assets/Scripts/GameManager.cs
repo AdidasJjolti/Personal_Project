@@ -19,7 +19,7 @@ public class GameManager : MonoBehaviour
 
                 if(instance == null)
                 {
-                    Debug.LogError("°ÔÀÓ¸Å´ÏÀú Ã£À» ¼ö ¾øÀ½");
+                    Debug.LogError("ï¿½ï¿½ï¿½Ó¸Å´ï¿½ï¿½ï¿½ Ã£ï¿½ï¿½ ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½");
                     return null;
                 }
             }
@@ -49,6 +49,7 @@ public class GameManager : MonoBehaviour
 
     public TextMeshProUGUI healthUI;
     public TextMeshProUGUI timeUI;
+    public TextMeshProUGUI clearText;
     public float LapsedTime;
     public GameObject RetryButton;
     public GameObject QuitButton;
@@ -70,7 +71,7 @@ public class GameManager : MonoBehaviour
         }
 
         DontDestroyOnLoad(gameObject);
-        gameScene = SceneManager.GetActiveScene().buildIndex;     // °ÔÀÓ ¸Å´ÏÀú°¡ ÀÖ´Â ¾À ¹øÈ£(ÇÃ·¹ÀÌÇÒ ¾À)¸¦ ÀúÀå
+        gameScene = SceneManager.GetActiveScene().buildIndex;     // ï¿½ï¿½ï¿½ï¿½ ï¿½Å´ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½Ö´ï¿½ ï¿½ï¿½ ï¿½ï¿½È£(ï¿½Ã·ï¿½ï¿½ï¿½ï¿½ï¿½ ï¿½ï¿½)ï¿½ï¿½ ï¿½ï¿½ï¿½ï¿½
     }
 
     void Start()
@@ -140,11 +141,12 @@ public class GameManager : MonoBehaviour
         }
     }
 
+
     public void OnClickPauseButton()
     {
         Image buttonImg = GameObject.Find("Pause Button").GetComponent<Image>();
-
         isPaused = !isPaused;
+        
 
         if (isPaused)
         {
@@ -158,6 +160,16 @@ public class GameManager : MonoBehaviour
             buttonImg.sprite = PauseButton;
             Camera.main.GetComponent<AudioSource>().Play();
         }
+    }
+
+    public void OnClickRetryButton()
+    {
+        SceneManager.LoadScene(gameScene);
+    }
+
+    public void OnClickQuitButton()
+    {
+        SceneManager.LoadScene(gameScene - 1);
     }
 
     public void SetSavePoint()
@@ -175,11 +187,25 @@ public class GameManager : MonoBehaviour
 
     public void GameOver()
     {
-        Debug.Log("°ÔÀÓ Á¾·á");
+        Time.timeScale = 0;
+        GameObject.Find("Canvas").transform.Find("Retry Button").gameObject.SetActive(true);
+        GameObject.Find("Canvas").transform.Find("Quit Button").gameObject.SetActive(true);
+
     }
 
     public void GameClear()
     {
-        Debug.Log("°ÔÀÓ Å¬¸®¾î");
+        Time.timeScale = 0;
+        GameObject.Find("Canvas").transform.Find("Retry Button").gameObject.SetActive(true);
+        GameObject.Find("Canvas").transform.Find("Quit Button").gameObject.SetActive(true);
+        GameObject.Find("Canvas").transform.Find("Clear_Text").gameObject.SetActive(true);
+
+        LapsedTime += Time.deltaTime;
+        float minutes = Mathf.Floor(LapsedTime / 60);
+        float seconds = (int)(LapsedTime % 60);
+        string minutesS = minutes.ToString();
+        string secondsS = seconds.ToString();
+
+        clearText.text = "Congratulations!\nRecord " + string.Format("{0}:{1}", minutesS, secondsS);
     }
 }

@@ -153,7 +153,15 @@ public class Player : MonoBehaviour
         else if(collision.transform.CompareTag("Item"))
         {
             collision.gameObject.SetActive(false);
-            health++;
+
+            if(health>=3)
+            {
+                return;
+            }
+            else
+            {
+                health++;
+            }
         }
         else if(collision.transform.CompareTag("Save Point"))
         {
@@ -172,7 +180,7 @@ public class Player : MonoBehaviour
                     health--;
                     GameManager.Instance.SetPlayerPosition();
                 }
-                else if(health <=1)
+                else if(health <=0)
                 {
                     GameManager.Instance.GameOver();
                 }
@@ -210,10 +218,17 @@ public class Player : MonoBehaviour
         isDamaged = true;
         health--;
 
-        audioSource.clip = audioClips[(int)CLIPNAME.DAMAGED];
-        audioSource.Play();
+        if (health>1)
+        {
+            audioSource.clip = audioClips[(int)CLIPNAME.DAMAGED];
+            audioSource.Play();
 
-        StartCoroutine(OnDamagedSprite());
+            StartCoroutine(OnDamagedSprite());
+        }
+        else if(health <=0)
+        {
+            GameManager.Instance.GameOver();
+        }
     }
 
     IEnumerator OnDamagedSprite ()
