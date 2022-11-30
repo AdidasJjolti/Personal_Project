@@ -152,8 +152,6 @@ public class Player : MonoBehaviour
         }
         else if(collision.transform.CompareTag("Item"))
         {
-            collision.gameObject.SetActive(false);
-
             if(health>=3)
             {
                 return;
@@ -161,6 +159,7 @@ public class Player : MonoBehaviour
             else
             {
                 health++;
+                collision.gameObject.SetActive(false);
             }
         }
         else if(collision.transform.CompareTag("Save Point"))

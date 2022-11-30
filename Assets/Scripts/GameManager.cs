@@ -50,6 +50,7 @@ public class GameManager : MonoBehaviour
     public TextMeshProUGUI healthUI;
     public TextMeshProUGUI timeUI;
     public TextMeshProUGUI clearText;
+    public TextMeshProUGUI gameoverText;
     public float LapsedTime;
     public GameObject RetryButton;
     public GameObject QuitButton;
@@ -58,7 +59,6 @@ public class GameManager : MonoBehaviour
     public Sprite PauseButton;
 
     bool isPaused;
-    bool onClickPauseButton;
 
     void Awake()
     {
@@ -154,10 +154,16 @@ public class GameManager : MonoBehaviour
             clearText = GameObject.Find("Canvas").transform.Find("Clear_Text").gameObject.GetComponent<TextMeshProUGUI>();
         }
 
+        if (!gameoverText)
+        {
+            gameoverText = GameObject.Find("Canvas").transform.Find("Gameover_Text").gameObject.GetComponent<TextMeshProUGUI>();
+        }
+
         if (!RetryButton)
         {
-            RetryButton = GameObject.Find("Canvas").transform.Find("Retry Button").gameObject;
+            RetryButton = GameObject.Find("Canvas").transform.Find("Retry Button").gameObject;      // retry 버튼을 찾기, canvas 내 게임오브젝트로 찾기
             Button retryButton = RetryButton.GetComponent<Button>();
+            // retry버튼 onClick 이벤트를 코드로 입력, 게임 재실행할 때 게임매니저 내 public 오브젝트가 날아가면서 onClick 이벤트가 제거하는 것을 복구
             retryButton.onClick.AddListener(OnClickRetryButton);
         }
 
@@ -169,7 +175,9 @@ public class GameManager : MonoBehaviour
         }
 
         Button button = GameObject.Find("Pause Button").GetComponent<Button>();
-        if(button.onClick.GetPersistentEventCount()<=1)
+
+        // pause버튼 내 이벤트는 효과음 이벤트, OnClickPauseButton 이벤트 총 2개 필요, 1개(버튼 효과음 이벤트)만 남은 경우 OnClickPauseButton이벤트 추가
+        if (button.onClick.GetPersistentEventCount()<=1)
         {
             button.onClick.AddListener(OnClickPauseButton);
         }
@@ -178,13 +186,6 @@ public class GameManager : MonoBehaviour
 
     public void OnClickPauseButton()
     {
-        //if(onClickPauseButton)
-        //{
-        //    return;
-        //}
-
-        //onClickPauseButton = true;
-
         Image buttonImg = GameObject.Find("Pause Button").GetComponent<Image>();
         isPaused = !isPaused;
         
@@ -243,6 +244,15 @@ public class GameManager : MonoBehaviour
         Time.timeScale = 0;
         GameObject.Find("Canvas").transform.Find("Retry Button").gameObject.SetActive(true);
         GameObject.Find("Canvas").transform.Find("Quit Button").gameObject.SetActive(true);
+        GameObject.Find("Canvas").transform.Find("Gameover_Text").gameObject.SetActive(true);
+
+        LapsedTime += Time.deltaTime;
+        float minutes = Mathf.Floor(LapsedTime / 60);
+        float seconds = (int)(LapsedTime % 60);
+        string minutesS = minutes.ToString();
+        string secondsS = seconds.ToString();
+
+        gameoverText.text = "Game Over\nRecord " + string.Format("{0}:{1}", minutesS, secondsS);
 
     }
 
